@@ -1,68 +1,88 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "mspOfferName": {
-            "type": "string",
-            "metadata": {
-                "description": "Specify a unique name for your offer"
-            }
-        },
-        "mspOfferDescription": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of the Managed Service Provider offering"
-            }
-        },
-        "managedByTenantId": {
-            "type": "string",
-            "metadata": {
-                "description": "Specify the tenant id of the Managed Service Provider"
-            }
-        },
-        "authorizations": {
-            "type": "array",
-            "metadata": {
-                "description": "Specify an array of objects, containing tuples of Azure Active Directory principalId, a Azure roleDefinitionId, and an optional principalIdDisplayName. The roleDefinition specified is granted to the principalId in the provider's Active Directory and the principalIdDisplayName is visible to customers."
-            }
-        }              
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "mspOfferName": {
+      "type": "string",
+      "defaultValue": "Theo Tech, Transforma\u00e7\u00e3o Digital",
+      "metadata": {
+        "description": "Specify a unique name for your offer"
+      }
     },
-    "variables": {
-        "mspRegistrationName": "[guid(parameters('mspOfferName'))]",
-        "mspAssignmentName": "[guid(parameters('mspOfferName'))]"
+    "mspOfferDescription": {
+      "type": "string",
+      "defaultValue": "Gerenciamento de IaaS no Azure",
+      "metadata": {
+        "description": "Name of the Managed Service Provider offering"
+      }
     },
-    "resources": [
+    "managedByTenantId": {
+      "type": "string",
+      "defaultValue": "c1e8b8e4-9fce-4ad8-a466-3f9fa884d95c",
+      "metadata": {
+        "description": "Specify the tenant id of the Managed Service Provider"
+      }
+    },
+    "authorizations": {
+      "type": "array",
+      "defaultValue": [
         {
-            "type": "Microsoft.ManagedServices/registrationDefinitions",
-            "apiVersion": "2019-09-01",
-            "name": "[variables('mspRegistrationName')]",
-            "properties": {
-                "registrationDefinitionName": "[parameters('mspOfferName')]",
-                "description": "[parameters('mspOfferDescription')]",
-                "managedByTenantId": "[parameters('managedByTenantId')]",
-                "authorizations": "[parameters('authorizations')]"
-            }
+          "principalId": "916804eb-a16f-4028-8338-75b549ca6fdc",
+          "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+          "principalIdDisplayName": "Theo Tech - Equipe_Ninja"
         },
         {
-            "type": "Microsoft.ManagedServices/registrationAssignments",
-            "apiVersion": "2019-09-01",
-            "name": "[variables('mspAssignmentName')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ManagedServices/registrationDefinitions/', variables('mspRegistrationName'))]"
-            ],
-            "properties": {
-                "registrationDefinitionId": "[resourceId('Microsoft.ManagedServices/registrationDefinitions/', variables('mspRegistrationName'))]"
-            }
-        }
-    ],
-    "outputs": {
-        "mspOfferName": {
-            "type": "string",
-            "value": "[concat('Managed by', ' ', parameters('mspOfferName'))]"
+          "principalId": "05949a46-54e3-44e5-bcc1-261eb356ede2",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "principalIdDisplayName": "Theo Tech - Gest\u00e3o de Acessos"
         },
-        "authorizations": {
-            "type": "array",
-            "value": "[parameters('authorizations')]"
+        {
+          "principalId": "9529fde6-9506-4a57-9c3d-f15687acdb53",
+          "roleDefinitionId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+          "principalIdDisplayName": "Theo Tech - AzureOps - Contrib"
         }
+      ],
+      "metadata": {
+        "description": "Specify an array of objects, containing tuples of Azure Active Directory principalId, a Azure roleDefinitionId, and an optional principalIdDisplayName. The roleDefinition specified is granted to the principalId in the provider's Active Directory and the principalIdDisplayName is visible to customers."
+      }
     }
+  },
+  "variables": {
+    "mspRegistrationName": "[guid(parameters('mspOfferName'))]",
+    "mspAssignmentName": "[guid(parameters('mspOfferName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedServices/registrationDefinitions",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('mspRegistrationName')]",
+      "properties": {
+        "registrationDefinitionName": "[parameters('mspOfferName')]",
+        "description": "[parameters('mspOfferDescription')]",
+        "managedByTenantId": "[parameters('managedByTenantId')]",
+        "authorizations": "[parameters('authorizations')]"
+      }
+    },
+    {
+      "type": "Microsoft.ManagedServices/registrationAssignments",
+      "apiVersion": "2019-09-01",
+      "name": "[variables('mspAssignmentName')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedServices/registrationDefinitions/', variables('mspRegistrationName'))]"
+      ],
+      "properties": {
+        "registrationDefinitionId": "[resourceId('Microsoft.ManagedServices/registrationDefinitions/', variables('mspRegistrationName'))]"
+      }
+    }
+  ],
+  "outputs": {
+    "mspOfferName": {
+      "type": "string",
+      "value": "[concat('Managed by', ' ', parameters('mspOfferName'))]"
+    },
+    "authorizations": {
+      "type": "array",
+      "value": "[parameters('authorizations')]"
+    }
+  }
 }
